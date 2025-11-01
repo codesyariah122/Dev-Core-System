@@ -1,0 +1,8 @@
+version: '3.7'
+services:
+  app:
+    image: alpine:3.17
+    command: sleep infinity
+    volumes:
+      - ./:/workspace
+    working_dir: /workspace
