@@ -84,6 +84,7 @@ dev-core-system/
 | Phase 3 | Integration Layer (GitHub, VPS Deploy) | ⏳ Planned     |
 | Phase 4 | Automation & Backup                    | ⏳ Planned     |
 | Phase 5 | DevCore Cloud Dashboard                | 🧩 Research    |
+<img width="1024" height="1536" alt="devcore-system-roadmap" src="https://github.com/user-attachments/assets/a4b64b39-068e-4ef2-8044-b2aadf9d4b39" />
 
 📜 Lisensi
 

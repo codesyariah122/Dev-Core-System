@@ -1,148 +1,185 @@
+# 🧱 DevCore System Documentation
+
+A unified CLI framework to automate development workflows for WordPress, Laravel, and hybrid stacks. Inspired by **Laravel Artisan**, designed with simplicity, speed, and cross-environment automation in mind.
 
 ---
 
-## 📘 2️⃣ `DOCUMENTATION.md`
-```markdown
-# 📘 DevCore CLI — Dokumentasi Resmi
+## 1️⃣ Installation & Setup
 
-> Versi: 1.0.0  
-> Format: Laravel Artisan Docs Style  
+### 1.1 Prerequisites
+
+* Node.js v18+
+* Git (with GitHub account configured)
+* Either **XAMPP**, **Laragon**, or **Laradock** installed locally.
+
+### 1.2 Global Installation
+
+```bash
+npm install -g devcore
+```
+
+### 1.3 Initialize Configuration
+
+Create or rebuild configuration for the first time:
+
+```bash
+devcore config rebuild
+```
+
+Reset configuration (remove `.devcore_config.json`):
+
+```bash
+devcore config reset
+```
 
 ---
 
-## 🔧 Instalasi Awal
+## 2️⃣ Authentication
 
-Pastikan Python sudah terinstal (`>=3.10`) dan path sudah terdaftar di environment variable.
+### 2.1 GitHub Login
 
-```bash
-git clone https://github.com/username/dev-core-system.git
-cd dev-core-system
-pip install -r requirements.txt
-```  
-
-#### ⚙️ Konfigurasi Global
-
-File konfigurasi utama berada di:  
+Authenticate your GitHub account for project initialization and version control.
 
 ```bash
-.devcore.json
-```  
+devcore login github
+```
 
-Contoh konfigurasi:  
+---
+
+## 3️⃣ Project Management Commands
+
+### 3.1 Create a New Template
+
+```bash
+devcore new project --type wordpress --client "New Commerce Project" --stack "wordpress+woo"
+```
+
+This command scaffolds the base structure for your client project with proper stack settings.
+
+### 3.2 Initialize WordPress Build
+
+```bash
+devcore wp init New-Commerce-Project
+```
+
+Automatically builds and configures a full WordPress + WooCommerce environment based on your stack setup.
+
+### 3.3 Remove Database
+
+```bash
+del devcore_projects.db
+```
+
+Deletes the local DevCore database, resetting stored project records.
+
+---
+
+## 4️⃣ Environment Configuration
+
+### 4.1 Supported Environments
+
+* XAMPP → `C:/xampp/htdocs`
+* Laragon → `C:/laragon/www`
+* Laradock → `C:/Users/<YourUser>/tw-project/laradock`
+
+> ⚠️ Make sure your local stack (XAMPP, Laragon, or Laradock) is **running** before initializing or deploying a project.
+
+### 4.2 Environment Path Fix
+
+If paths with spaces fail (like `Laptop Store 95`), wrap the path in quotes or escape them properly in `.devcore_config.json`.
+
+Example:
+
 ```json
 {
   "xampp": "C:/xampp/htdocs",
   "laragon": "C:/laragon/www",
   "laradock": "C:/Users/Laptop Store 95/tw-project/laradock"
 }
-```  
+```
 
-> Pastikan semua path ditulis dengan slash (/) forward, bukan backslash (\), untuk mencegah error encoding pada JSON.  
+---
 
-#### 🔐 Login ke GitHub
+## 5️⃣ Roadmap & Milestones
 
-Gunakan command berikut untuk mengautentikasi:  
-```bash
-devcore login github
-```  
-Setelah login, DevCore otomatis menyimpan token ke dalam database internal (devcore_projects.db).  
+| Milestone | Description                                    | Status         |
+| --------- | ---------------------------------------------- | -------------- |
+| v0.1      | Base CLI setup, config handler, WordPress init | ✅ Done         |
+| v0.2      | Laravel + Hybrid Stack integration             | 🔄 In Progress |
+| v0.3      | DevCore Dashboard UI (web-based CLI logs)      | ⏳ Planned      |
+| v1.0      | Plugin Marketplace + Auto-deploy Git Actions   | 🚧 Coming Soon |
 
-#### 🧱 Membuat Project Baru
+> 📄 See the visual roadmap image: `roadmap-devcore.png`
 
-Gunakan perintah berikut:  
+---
 
-```bash
-devcore new project --type wordpress --client "Client Name" --stack "wordpress+woo"
-```  
+## 6️⃣ Contributing
 
-Parameter:
+1. Fork this repo
+2. Create a new branch for your feature
+3. Commit and push your updates
+4. Submit a pull request with detailed notes
 
-- --type: Jenis project (wordpress, laravel, static)
+---
 
-- --client: Nama client
+## 7️⃣ License
 
-- --stack: Jenis stack (misal: wordpress+woo, wordpress+elementor)  
+MIT License © 2025 DevCore Authors
 
-#### ⚡ WordPress Builder
+---
 
-Setelah template dibuat, jalankan:  
-```bash
-devcore wp init New-Commerce-Project
-```  
+## 📘 DOCUMENTATION.md (Extended Guide)
 
-###### Perintah ini akan:
+### Overview
 
-1. Membuat direktori WordPress project.
+`DevCore CLI` is an automation layer for local WordPress & Laravel environments, built to:
 
-2. Menyalin template dasar dari /templates/wordpress.
+* Reduce repetitive setup tasks
+* Maintain consistent project scaffolding
+* Integrate version control and environment sync automatically
 
-3. Melakukan konfigurasi database dan environment.
+### Command Reference
 
-4. Menjalankan setup plugin dasar (WooCommerce, Elementor, JetEngine, dsb).  
+| Command                  | Description                         |
+| ------------------------ | ----------------------------------- |
+| `devcore login github`   | Authenticate GitHub for repo access |
+| `devcore new project`    | Create new client or stack project  |
+| `devcore wp init`        | Setup and build WordPress structure |
+| `devcore config rebuild` | Reinitialize global configuration   |
+| `devcore config reset`   | Delete config and start fresh       |
 
-#### 🔁 Config Management
+### Configuration File
 
-Reset seluruh konfigurasi DevCore:  
-```bash
-devcore config reset
-```  
+`.devcore_config.json` is stored globally in your user home directory. Example:
 
-Rebuild ulang konfigurasi dari awal:  
+```json
+{
+  "xampp": "C:/xampp/htdocs",
+  "laragon": "C:/laragon/www",
+  "laradock": "C:/Users/puji/tw-project/laradock"
+}
+```
+
+### Error Handling
+
+If `devcore` cannot detect your environment, run:
+
 ```bash
 devcore config rebuild
-```  
+```
 
-#### 💾 Database Project
+Or manually check permissions on your local server folder.
 
-Database internal DevCore:  
+### Advanced Usage
+
+Generate boilerplate code for stacks (planned for v0.3):
+
 ```bash
-devcore_projects.db
-```  
-###### Berisi:
+devcore generate stack laravel-wordpress
+```
 
-- Metadata project
+---
 
-- Path environment
-
-- Status deployment
-
-- Token user (jika ada)
-
-Untuk menghapus database:  
-```bash
-del devcore_projects.db
-```  
-
-#### 🧭 Roadmap Detail  
-| Fase | Fitur                                | Status | Target  |
-| ---- | ------------------------------------ | ------ | ------- |
-| 1    | Core CLI (login, config, DB handler) | ✅      | Q4 2025 |
-| 2    | WordPress Stack Builder              | 🚧     | Q4 2025 |
-| 3    | GitHub & VPS Integration             | ⏳      | Q1 2026 |
-| 4    | Backup/Restore Automation            | ⏳      | Q2 2026 |
-| 5    | Cloud Dashboard                      | 🧩     | Q3 2026 |
-
-### 💬 Kontribusi
-
-Buat branch baru dari main:  
-```bash
-git checkout -b feature/nama-fitur
-```  
-
-Commit sesuai standar:  
-```bash
-git commit -m "feat: menambahkan command reset config"
-```  
-
-Push ke repo:
-```bash
-git push origin feature/nama-fitur
-```  
-
-### 📚 Lisensi
-
-MIT License © 2025 — DevCore Team  | Puji Ermanto<pujiermanto@gmail.com> As Software Engineer
-
-
-
-
+**Author:** Puji Ermanto
+**Maintainer:** GPT-5 x DevCore System
+**Version:** 0.2.0-alpha
