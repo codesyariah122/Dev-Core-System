@@ -180,6 +180,6 @@ devcore generate stack laravel-wordpress
 
 ---
 
-**Author:** Puji Ermanto
-**Maintainer:** GPT-5 x DevCore System
+**Author:** Puji Ermanto - Devcore Founder & Owner
+**Maintainer:** Richard Santana - DevCore Founder & Owner
 **Version:** 0.2.0-alpha
