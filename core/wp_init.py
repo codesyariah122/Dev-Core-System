@@ -2,6 +2,7 @@ from core.github_integration import github_init
 from core.db import add_project, update_repo_url
 from core.template_engine import generate_readme
 from core.env_manager import choose_environment
+from core.env_manager import get_mysql_path, add_to_system_path
 from datetime import datetime
 import os
 import subprocess
@@ -12,6 +13,12 @@ from pathlib import Path
 
 def init_wp_project(project_name):
     env, base_dir = choose_environment()
+    mysql_path = get_mysql_path(env)
+    if mysql_path:
+        print(f"🔍 Mengecek PATH MySQL untuk {env}: {mysql_path}")
+        add_to_system_path(mysql_path)
+    else:
+        print("⚠️ Tidak menemukan lokasi MySQL untuk environment ini.")
     project_dir = base_dir / project_name
     wp_zip_path = project_dir / "wordpress.zip"
     wp_url = "https://wordpress.org/latest.zip"
@@ -162,5 +169,4 @@ services:
             print("⚠️  MySQL CLI tidak ditemukan di PATH. Lewati auto-create database.")
         except subprocess.CalledProcessError as e:
             print(f"❌ Gagal membuat database: {e}")
-
 

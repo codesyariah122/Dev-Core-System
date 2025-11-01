@@ -42,7 +42,7 @@ devcore new project --type wordpress --client "New Commerce Project" --stack "wo
 
 3️⃣ Build WordPress Project  
 ```bash
-devcore wp init New-Commerce-Project
+devcore wp init NewCommerceProject
 ```  
 
 4️⃣ Reset atau Rebuild Konfigurasi
@@ -54,6 +54,13 @@ devcore config reset
 5️⃣ Menghapus Database Project
 ```bash
 del devcore_projects.db
+```  
+
+#### Setup WordPress Plugins & Themes
+Installs plugins and themes automatically using WP-CLI based on configuration files.
+
+```bash
+devcore wp-setup --dir "C:/xampp/htdocs/MyNewCommerceProject"
 ```  
 
 📁 Struktur Direktori DevCore  

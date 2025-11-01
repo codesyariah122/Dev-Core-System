@@ -1,5 +1,5 @@
 {
-  "xampp": "C:/xampp/htdocs",
-  "laragon": "C:/laragon/www",
-  "laradock": "C:/Users/Laptop Store 95/tw-project/laradock"
+    "xampp": "C:/xampp/htdocs",
+    "laragon": "C:/laragon/www",
+    "laradock": "C:/laradock/projects"
 }

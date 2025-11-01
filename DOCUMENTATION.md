@@ -176,7 +176,23 @@ Generate boilerplate code for stacks (planned for v0.3):
 
 ```bash
 devcore generate stack laravel-wordpress
-```
+```  
+
+```markdown
+### 4️⃣ Automation Layer — Plugin & Theme Setup
+
+DevCore now supports automatic installation of WordPress plugins and themes using WP-CLI.
+
+**Command:**
+```bash
+devcore wp-setup --dir "<path>"
+```  
+
+## ✅ 5️⃣ Contoh Penggunaan Nyata
+
+```bash
+devcore wp-setup --dir "C:/xampp/htdocs/New-Commerce-Project"
+```  
 
 ---
 

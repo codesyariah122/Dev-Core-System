@@ -1,58 +1,62 @@
 import json
+import platform
 import subprocess
 from pathlib import Path
 
 CONFIG_FILE = Path(__file__).resolve().parent.parent / ".devcore.json"
 
-DEFAULT_CONFIG = {
-    "xampp": "C:/xampp/htdocs",
-    "laragon": "C:/laragon/www",
-    "laradock": "C:/laradock/projects"
-}
+def get_default_paths():
+    """Tentukan path default berdasarkan sistem operasi"""
+    system = platform.system().lower()
+
+    if "windows" in system:
+        return {
+            "xampp": Path("C:/xampp/htdocs"),
+            "laragon": Path("C:/laragon/www"),
+            "laradock": Path("C:/laradock/projects")
+        }
+    elif "darwin" in system:  # macOS
+        return {
+            "xampp": Path("/Applications/XAMPP/htdocs"),
+            "laragon": Path.home() / "Sites/laragon",
+            "laradock": Path.home() / "Sites/laradock"
+        }
+    else:  # Linux
+        return {
+            "xampp": Path("/opt/lampp/htdocs"),
+            "laragon": Path.home() / "Projects/laragon",
+            "laradock": Path.home() / "Projects/laradock"
+        }
 
 def load_env_config():
+    """Muat konfigurasi environment, jika belum ada buat otomatis"""
+    defaults = get_default_paths()
+
     if CONFIG_FILE.exists():
         with open(CONFIG_FILE, "r") as f:
-            return json.load(f)
+            config = json.load(f)
     else:
-        return DEFAULT_CONFIG
+        config = {k: str(v) for k, v in defaults.items()}
+        save_env_config(config)
+
+    # Pastikan semua path ada
+    for key, path_str in config.items():
+        path = Path(path_str)
+        if not path.exists():
+            path.mkdir(parents=True, exist_ok=True)
+            print(f"📁 Path '{path}' dibuat otomatis untuk {key}")
+
+    return config
 
 def save_env_config(config):
     with open(CONFIG_FILE, "w") as f:
         json.dump(config, f, indent=4)
     print(f"✅ Konfigurasi environment tersimpan di {CONFIG_FILE}")
 
-def check_mysql_running():
-    """Cek apakah MySQL sedang berjalan di XAMPP, Laragon, atau Docker"""
-    try:
-        # Coba jalankan perintah mysql -V (cek versi)
-        subprocess.run(["mysql", "-V"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        print("✅ MySQL CLI terdeteksi di sistem.")
-        return True
-    except Exception:
-        print("⚠️ MySQL CLI tidak terdeteksi di PATH.")
-
-    # Cek Docker container mysql (untuk Laradock)
-    try:
-        result = subprocess.run(
-            ["docker", "ps", "--filter", "name=mysql", "--format", "{{.Names}}"],
-            capture_output=True, text=True
-        )
-        if "mysql" in result.stdout:
-            print("🐳 MySQL container (Laradock) sedang berjalan.")
-            return True
-    except Exception:
-        pass
-
-    print("❌ MySQL belum aktif. Jalankan XAMPP/Laragon/Docker MySQL terlebih dahulu.")
-    return False
-
 def choose_environment():
-    if not check_mysql_running():
-        print("⛔ Tidak dapat melanjutkan tanpa MySQL aktif.")
-        return None, None  # keluar dari proses
-
+    """Pilih environment dan pastikan path-nya ada"""
     config = load_env_config()
+
     print("Pilih environment lokal:")
     print(f"[1] XAMPP ({config['xampp']})")
     print(f"[2] Laragon ({config['laragon']})")
@@ -73,6 +77,7 @@ def choose_environment():
     print(f"📂 Environment dipilih: {env} → {base}")
     return env, base
 
+
 def set_custom_env():
     config = load_env_config()
     print("🛠️  Konfigurasi environment custom:")
@@ -89,3 +94,56 @@ def rebuild_env_config():
         print("🗑️  File konfigurasi lama dihapus.")
     save_env_config(DEFAULT_CONFIG)
     print("✅ Konfigurasi default berhasil dibuat ulang.")
+    
+def get_mysql_path(env_name: str) -> Path | None:
+    """Kembalikan path MySQL sesuai environment"""
+    system = platform.system().lower()
+
+    if "windows" in system:
+        if env_name == "xampp":
+            return Path("C:/xampp/mysql/bin")
+        elif env_name == "laragon":
+            # deteksi otomatis versi MySQL (jika ada)
+            base = Path("C:/laragon/bin/mysql")
+            if base.exists():
+                versions = sorted(base.glob("mysql*/bin"), reverse=True)
+                if versions:
+                    return versions[0]
+            return base / "mysql-8.0.30-winx64/bin"  # fallback
+        elif env_name == "laradock":
+            return Path("C:/laradock/mysql/bin")
+    else:
+        # Mac/Linux
+        if env_name == "xampp":
+            return Path("/opt/lampp/bin")
+        elif env_name == "laradock":
+            return Path.home() / "Projects/laradock/mysql/bin"
+
+    return None
+
+def add_to_system_path(path_to_add: Path):
+    """Tambahkan folder ke Environment PATH (permanent)"""
+    system = platform.system().lower()
+    path_str = str(path_to_add.resolve())
+
+    if not path_to_add.exists():
+        print(f"⚠️  Path tidak ditemukan: {path_to_add}")
+        return False
+
+    if "windows" in system:
+        current_path = subprocess.getoutput('echo %PATH%')
+        if path_str in current_path:
+            print(f"✔️  PATH sudah mengandung: {path_str}")
+            return True
+        subprocess.run(["setx", "PATH", f"%PATH%;{path_str}"], shell=True)
+        print(f"✅ PATH berhasil ditambahkan di Windows: {path_str}")
+    elif "darwin" in system or "linux" in system:
+        shell_rc = Path.home() / (".zshrc" if Path.home().joinpath(".zshrc").exists() else ".bashrc")
+        with open(shell_rc, "a") as f:
+            f.write(f'\n# Added by DevCore setup\nexport PATH="$PATH:{path_str}"\n')
+        print(f"✅ PATH ditambahkan ke {shell_rc}: {path_str}")
+    else:
+        print("⚠️  Sistem operasi tidak dikenali, PATH tidak diubah.")
+        return False
+
+    return True

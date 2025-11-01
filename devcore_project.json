@@ -1,0 +1,5 @@
+{
+  "project_name": "New-Commerce-Project",
+  "plugins": ["woocommerce", "jetpack"],
+  "themes": ["flatsome"]
+}
