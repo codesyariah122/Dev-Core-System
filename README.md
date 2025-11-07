@@ -50,10 +50,6 @@ devcore new project --type wordpress --client "New-Commerce-Project" --stack "wo
 devcore wp init New-Commerce-Project
 ```  
 
-Or With Setup : 
-```bash
-devcore wp init New-Commerce-Project --include-setup
-```  
 4️⃣ Reset atau Rebuild Konfigurasi
 ```bash
 devcore config rebuild
@@ -69,7 +65,7 @@ del devcore_projects.db
 Installs plugins and themes automatically using WP-CLI based on configuration files.
 
 ```bash
-devcore wp-setup --dir "C:/xampp/htdocs/MyNewCommerceProject"
+devcore wp init New-Commerce-Project --include-setup
 ```  
 
 📁 Struktur Direktori DevCore  
@@ -78,16 +74,23 @@ dev-core-system/
 │
 ├── core/
 │   ├── command_config.py
-│   ├── command_new.py
-│   ├── command_wp.py
-│   ├── config_manager.py
-│   └── utils.py
+│   ├── command_new_setup.py
+│   ├── db.py
+│   ├── env_manager.py
+│   └── wp_init.py
+│   └── wp_dropdb.py
+│   └── github_integration.py
+│   └── template_engine.py
 │
 ├── templates/
-│   └── wordpress/
+│   └── .env.example (autogenerate)
+│   └── docker-compose.yml (autogenerate)
+│   └── README.md (autogenerate)
 │
 ├── .devcore.json
 ├── devcore_projects.db
+├── devcore
+├── devcore.cmd
 ├── README.md
 └── DOCUMENTATION.md
 ```  

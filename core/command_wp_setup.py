@@ -46,11 +46,46 @@ def cmd_wp_setup(project_dir="."):
 
     # Jalankan instalasi plugin
     plugin_cmds = [f"plugin install {p} --activate" for p in plugins]
-    theme_cmds = [f"theme install {t} --activate" for t in themes]
+    theme_cmds = []
+    for t in themes:
+        if t == "blocksy-child":
+            # Lewati install, nanti dibuat manual
+            continue
+        theme_cmds.append(f"theme install {t} --activate")
 
     run_wp_cli(plugin_cmds + theme_cmds, cwd=project_dir)
 
     print("✅ Instalasi plugin & theme selesai!")
+    
+        # Auto-generate Blocksy Child theme jika diperlukan
+    blocksy_child_dir = Path(project_dir) / "wp-content" / "themes" / "blocksy-child"
+    if "blocksy-child" in themes and not blocksy_child_dir.exists():
+        print("🧱 Membuat Blocksy Child theme otomatis...")
+        os.makedirs(blocksy_child_dir, exist_ok=True)
+
+        style_css = """/*
+            Theme Name: Blocksy Child
+            Template: blocksy
+            Author: DevCore System
+            Description: Child theme untuk kustomisasi Blocksy.
+            Version: 1.0
+            */
+            @import url("../blocksy/style.css");
+            """
+        functions_php = """<?php
+            add_action('wp_enqueue_scripts', function() {
+                wp_enqueue_style('blocksy-child-style', get_stylesheet_uri());
+            }, 20);
+            """
+        with open(blocksy_child_dir / "style.css", "w", encoding="utf-8") as f:
+            f.write(style_css)
+
+        with open(blocksy_child_dir / "functions.php", "w", encoding="utf-8") as f:
+            f.write(functions_php)
+
+        print("✅ Blocksy Child theme berhasil dibuat.")
+        subprocess.run(["wp", "theme", "activate", "blocksy-child"], cwd=project_dir)
+
     
     
 def generate_project_config(project_dir="."):
@@ -60,7 +95,7 @@ def generate_project_config(project_dir="."):
     global_config = load_global_config()
 
     default_plugins = global_config.get("default_plugins", ["woocommerce"])
-    default_themes = global_config.get("default_themes", ["flatsome"])
+    default_themes = global_config.get("default_themes", ["blocksy", "blocksy-child"])
 
     project_name = input("📝 Nama proyek: ") or "New-Project"
     plugins_input = input(f"🔌 Plugin (pisahkan koma, default: {', '.join(default_plugins)}): ").strip()

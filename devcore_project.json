@@ -1,9 +1,11 @@
 {
   "project_name": "New Commerce Projects",
   "plugins": [
-    "woocommerce"
+    "woocommerce",
+    "jetpack"
   ],
   "themes": [
-    "Hello Elementor"
+    "blocksy",
+    "blocksy-child"
   ]
 }

@@ -154,7 +154,7 @@ services:
         default_config = {
             "project_name": project_name,
             "plugins": ["woocommerce", "jetpack"],
-            "themes": ["flatsome"]
+            "themes": ["blocksy", "blocksy-child"]
         }
         with open(config_path, "w", encoding="utf-8") as f:
             import json
@@ -209,6 +209,10 @@ def install_plugins_and_themes(project_dir):
         wp_cli_cmd = [php_path, str(wp_phar)]
     else:
         wp_cli_cmd = [wp_cli]
+        
+    # === Clear cache sebelum instalasi ===
+    print("🧹 Membersihkan cache WP-CLI...")
+    subprocess.run(wp_cli_cmd + ["cache", "clear"], cwd=project_dir, check=False)
 
     # === Pastikan wp-config.php sudah ada ===
     wp_config = project_dir / "wp-config.php"
@@ -217,7 +221,7 @@ def install_plugins_and_themes(project_dir):
         subprocess.run(
             wp_cli_cmd + [
                 "config", "create",
-                "--dbname=" + f"{project_dir.name.lower()}_db",
+                "--dbname=" + f"{project_dir.name.lower().replace('-', '_')}_db",
                 "--dbuser=root",
                 "--dbpass=",
                 "--dbhost=localhost",
