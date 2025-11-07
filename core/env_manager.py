@@ -92,8 +92,11 @@ def rebuild_env_config():
     if CONFIG_FILE.exists():
         CONFIG_FILE.unlink()
         print("🗑️  File konfigurasi lama dihapus.")
-    save_env_config(DEFAULT_CONFIG)
+        
+    defaults = {k: str(v) for k, v in get_default_paths().items()}
+    save_env_config(defaults)
     print("✅ Konfigurasi default berhasil dibuat ulang.")
+
     
 def get_mysql_path(env_name: str) -> Path | None:
     """Kembalikan path MySQL sesuai environment"""
@@ -147,3 +150,29 @@ def add_to_system_path(path_to_add: Path):
         return False
 
     return True
+
+def detect_mysql_cli():
+    """Cari lokasi file mysql.exe / mysql CLI di environment umum"""
+    # 1️⃣ Coba cari di PATH sistem
+    mysql_path = shutil.which("mysql")
+    if mysql_path:
+        return Path(mysql_path)
+
+    # 2️⃣ Coba lokasi bawaan Laragon
+    laragon_mysql = Path("C:/laragon/bin/mysql")
+    if laragon_mysql.exists():
+        for version_dir in sorted(laragon_mysql.glob("mysql*/bin/mysql.exe"), reverse=True):
+            return version_dir
+
+    # 3️⃣ Coba lokasi bawaan XAMPP
+    xampp_mysql = Path("C:/xampp/mysql/bin/mysql.exe")
+    if xampp_mysql.exists():
+        return xampp_mysql
+
+    # 4️⃣ Coba lokasi global Linux / Mac
+    if platform.system() != "Windows":
+        for path in ["/usr/bin/mysql", "/usr/local/mysql/bin/mysql"]:
+            if Path(path).exists():
+                return Path(path)
+
+    return None
