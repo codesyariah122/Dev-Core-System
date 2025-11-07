@@ -1,4 +1,6 @@
+import os
 import json
+import shutil
 import platform
 import subprocess
 from pathlib import Path
@@ -134,12 +136,19 @@ def add_to_system_path(path_to_add: Path):
         return False
 
     if "windows" in system:
-        current_path = subprocess.getoutput('echo %PATH%')
+        # Ambil PATH sekarang dengan ekspansi variabel
+        current_path = os.environ.get("PATH", "")
         if path_str in current_path:
             print(f"✔️  PATH sudah mengandung: {path_str}")
             return True
-        subprocess.run(["setx", "PATH", f"%PATH%;{path_str}"], shell=True)
-        print(f"✅ PATH berhasil ditambahkan di Windows: {path_str}")
+
+        new_path = f"{current_path};{path_str}"
+
+        try:
+            subprocess.run(f'setx PATH "{new_path}"', shell=True, check=True)
+            print(f"✅ PATH berhasil ditambahkan di Windows: {path_str}")
+        except subprocess.CalledProcessError:
+            print(f"❌ Gagal menambahkan PATH ke Windows.")
     elif "darwin" in system or "linux" in system:
         shell_rc = Path.home() / (".zshrc" if Path.home().joinpath(".zshrc").exists() else ".bashrc")
         with open(shell_rc, "a") as f:
@@ -150,6 +159,7 @@ def add_to_system_path(path_to_add: Path):
         return False
 
     return True
+
 
 def detect_mysql_cli():
     """Cari lokasi file mysql.exe / mysql CLI di environment umum"""

@@ -54,7 +54,7 @@ def create_github_repo(repo_name, private=True, description=""):
     payload = {
         "name": repo_name,
         "private": private,
-        "description": description or f"Repository for {repo_name}",
+        "description": description or f"Repository for {repo_name} with devcore system by puji",
     }
 
     response = requests.post(api_url, headers=headers, json=payload)

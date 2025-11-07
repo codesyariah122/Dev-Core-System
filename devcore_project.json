@@ -1,5 +1,9 @@
 {
-  "project_name": "New-Commerce-Project",
-  "plugins": ["woocommerce", "jetpack"],
-  "themes": ["flatsome"]
+  "project_name": "New Commerce Projects",
+  "plugins": [
+    "woocommerce"
+  ],
+  "themes": [
+    "Hello Elementor"
+  ]
 }

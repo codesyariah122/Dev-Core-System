@@ -34,17 +34,26 @@ Didesain untuk developer yang ingin mempercepat workflow WordPress Development, 
 devcore login github
 ```  
 
+#### Setup project 
+```bash
+devcore wp setup --generate
+```  
+
 2️⃣ Membuat template awal  
 
 ```bash
-devcore new project --type wordpress --client "New Commerce Project" --stack "wordpress+woo"
+devcore new project --type wordpress --client "New-Commerce-Project" --stack "wordpress+woo"
 ```  
 
 3️⃣ Build WordPress Project  
 ```bash
-devcore wp init NewCommerceProject
+devcore wp init New-Commerce-Project
 ```  
 
+Or With Setup : 
+```bash
+devcore wp init New-Commerce-Project --include-setup
+```  
 4️⃣ Reset atau Rebuild Konfigurasi
 ```bash
 devcore config rebuild

@@ -1,2 +1,4 @@
 devcore_projects.db
 .devcore.json
+tools/
+./tools/

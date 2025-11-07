@@ -19,6 +19,7 @@ from core.github_integration import github_login, github_init, github_connect
 from core.wp_init import init_wp_project
 from core.wp_dropdb import drop_wp_database
 from core.command_config import cmd_reset_config
+from core.command_wp_setup import cmd_wp_setup, generate_project_config
 from core.env_manager import rebuild_env_config
 
 import argparse
@@ -207,14 +208,29 @@ def build_parser():
     wp_parser = subparsers.add_parser("wp", help="WordPress utilities")
     wp_sub = wp_parser.add_subparsers(dest="action")
 
+    # wp_init_parser = wp_sub.add_parser("init", help="Inisialisasi project WordPress baru")
+    # wp_init_parser.add_argument("project_name", help="Nama project WordPress")
+    # wp_init_parser.set_defaults(func=lambda args: init_wp_project(args.project_name))
     wp_init_parser = wp_sub.add_parser("init", help="Inisialisasi project WordPress baru")
     wp_init_parser.add_argument("project_name", help="Nama project WordPress")
-    wp_init_parser.set_defaults(func=lambda args: init_wp_project(args.project_name))
+    wp_init_parser.add_argument(
+        "--include-setup",
+        action="store_true",
+        help="Jalankan setup plugin & theme otomatis setelah init selesai"
+    )
+    wp_init_parser.set_defaults(func=lambda args: init_wp_project(args.project_name, include_setup=args.include_setup))
+
     
     
     wp_drop_parser = wp_sub.add_parser("dropdb", help="Hapus database, folder project, dan record dari DevCore")
     wp_drop_parser.add_argument("project_name", help="Nama project WordPress yang ingin dihapus")
     wp_drop_parser.set_defaults(func=lambda args: drop_wp_database(args.project_name))
+    
+    wp_setup_parser = wp_sub.add_parser("setup", help="Setup plugin & theme WordPress sesuai devcore_project.json")
+    wp_setup_parser.add_argument("--generate", action="store_true", help="Buat ulang file devcore_project.json")
+    wp_setup_parser.add_argument("project_dir", nargs="?", default=".", help="Path direktori proyek WordPress")
+    wp_setup_parser.set_defaults(func=lambda args: generate_project_config(args.project_dir) if args.generate else cmd_wp_setup(args.project_dir))
+
     
     # ---------------------------
     # Environment Config Commands

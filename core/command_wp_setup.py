@@ -51,3 +51,32 @@ def cmd_wp_setup(project_dir="."):
     run_wp_cli(plugin_cmds + theme_cmds, cwd=project_dir)
 
     print("✅ Instalasi plugin & theme selesai!")
+    
+    
+def generate_project_config(project_dir="."):
+    """Generate ulang devcore_project.json berdasarkan input user atau default global"""
+    print("🧱 Membuat ulang devcore_project.json ...")
+
+    global_config = load_global_config()
+
+    default_plugins = global_config.get("default_plugins", ["woocommerce"])
+    default_themes = global_config.get("default_themes", ["flatsome"])
+
+    project_name = input("📝 Nama proyek: ") or "New-Project"
+    plugins_input = input(f"🔌 Plugin (pisahkan koma, default: {', '.join(default_plugins)}): ").strip()
+    themes_input = input(f"🎨 Theme (pisahkan koma, default: {', '.join(default_themes)}): ").strip()
+
+    plugins = [p.strip() for p in plugins_input.split(",")] if plugins_input else default_plugins
+    themes = [t.strip() for t in themes_input.split(",")] if themes_input else default_themes
+
+    config_data = {
+        "project_name": project_name,
+        "plugins": plugins,
+        "themes": themes
+    }
+
+    config_path = Path(project_dir) / "devcore_project.json"
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(config_data, f, indent=2)
+
+    print(f"✅ File devcore_project.json berhasil dibuat di {config_path}")
