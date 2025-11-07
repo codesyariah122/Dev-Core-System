@@ -2,3 +2,7 @@ devcore_projects.db
 .devcore.json
 tools/
 ./tools/
+dist/
+./dist/
+devcore_cli.egg-info/
+./devcore_cli.egg-info/
