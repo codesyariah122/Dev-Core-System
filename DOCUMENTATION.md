@@ -194,6 +194,30 @@ devcore wp-setup --dir "<path>"
 devcore wp-setup --dir "C:/xampp/htdocs/New-Commerce-Project"
 ```  
 
+### Installasi Public  
+```bash
+pip install devcore-cli
+devcore --help
+```
+##### Login github
+```bash
+devcore login github
+```  
+Masukkan GitHub Personal Access Token (PAT):
+>
+
+#### Lists of commands  
+| Command                                                                | Fungsi                                             | Status |
+| ---------------------------------------------------------------------- | -------------------------------------------------- | ------ |
+| `devcore login github`                                                 | Login ke GitHub (via `core/github_integration.py`) | ✅      |
+| `devcore wp setup --generate`                                          | Generate `devcore_project.json`                    | ✅      |
+| `devcore new project --type wordpress --client "New-Commerce-Project"` | Buat scaffolding baru                              | ✅      |
+| `devcore wp init New-Commerce-Project`                                 | Buat WP project baru                               | ✅      |
+| `devcore wp init New-Commerce-Project --include-setup`                 | Build project + setup plugin & theme               | ✅      |
+| `devcore config rebuild` / `config reset`                              | Reset config environment                           | ✅      |
+| `devcore wp dropdb <nama_project>`                                     | Hapus database dan folder                          | ✅      |
+
+
 ---
 
 **Author:** Puji Ermanto - Devcore Founder & Owner

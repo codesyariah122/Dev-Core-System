@@ -89,11 +89,25 @@ dev-core-system/
 │
 ├── .devcore.json
 ├── devcore_projects.db
-├── devcore
+├── devcore.py
 ├── devcore.cmd
 ├── README.md
 └── DOCUMENTATION.md
 ```  
+
+
+#### Lists of commands  
+| Command                                                                | Fungsi                                             | Status |
+| ---------------------------------------------------------------------- | -------------------------------------------------- | ------ |
+| `devcore login github`                                                 | Login ke GitHub (via `core/github_integration.py`) | ✅      |
+| `devcore wp setup --generate`                                          | Generate `devcore_project.json`                    | 
+✅      |
+| `devcore wp new project --type wordpress --client "New-Commerce-Project"` | Buat scaffolding baru                              | ✅      |
+| `devcore wp init New-Commerce-Project`                                 | Buat WP project baru                               | ✅      |
+| `devcore wp init New-Commerce-Project --include-setup`                 | Build project + setup plugin & theme               | ✅      |
+| `devcore config rebuild` / `config reset`                              | Reset config environment                           | ✅      |
+| `devcore wp dropdb <nama_project>`                                     | Hapus database dan folder                          | ✅      |
+
 
 🧭 Roadmap Singkat  
 | Fase    | Deskripsi                              | Status         |
@@ -108,6 +122,49 @@ dev-core-system/
 📜 Lisensi
 
 MIT License © 2025 — [DevCore Project Team > Puji Ermanto<pujiermanto@gmail.com>]  
+
+
+#### Notes Error fixed   
+```bash
+rm -rf build dist *.egg-info
+pip uninstall devcore-cli -y
+```  
+
+#### Rebuild & publish  
+```bash
+python -m build
+pip install --upgrade build
+twine upload dist/*
+
+# 1️⃣ Bersihkan dulu build lama
+rm -rf build dist *.egg-info
+
+# 2️⃣ Build ulang package
+python setup.py sdist bdist_wheel
+
+# 3️⃣ Install ulang ke environment aktif
+pip install --upgrade --force-reinstall dist/devcore_cli-1.0.3-py3-none-any.whl
+
+# 1. Bersihkan build lama
+rm -rf build dist *.egg-info
+
+# 2. Build ulang
+python -m build
+
+# 3. Upload ke PyPI
+twine upload dist/*
+
+# 4. Instal versi terbaru
+pip install --no-cache-dir -U devcore-cli
+
+```  
+
+
+#### Testing 
+```bash
+pip install --no-cache-dir -U devcore-cli
+devcore --help
+```
 
 💬 Kontribusi
 

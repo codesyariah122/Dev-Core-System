@@ -1,6 +1,6 @@
 from core.github_integration import github_init
 from core.db import add_project
-from core.template_engine import generate_readme
+from core.template_engine import generate_readme, create_default_templates
 from core.env_manager import choose_environment, get_mysql_path, add_to_system_path
 from datetime import datetime
 
@@ -12,6 +12,8 @@ import shutil
 from pathlib import Path
 
 def init_wp_project(project_name, include_setup=False):
+    from core.template_engine import create_default_templates
+    create_default_templates()
     # === 1. Pilih environment (xampp / laragon / laradock) ===
     env, base_dir = choose_environment()
     mysql_path = get_mysql_path(env)
