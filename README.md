@@ -49,6 +49,12 @@ devcore new project --type wordpress --client "New-Commerce-Project" --stack "wo
 ```bash
 devcore wp init New-Commerce-Project
 ```  
+#### Setup WordPress Plugins & Themes
+Installs plugins and themes automatically using WP-CLI based on configuration files.
+
+```bash
+devcore wp init New-Commerce-Project --include-setup
+```  
 
 4️⃣ Reset atau Rebuild Konfigurasi
 ```bash
@@ -61,12 +67,15 @@ devcore config reset
 del devcore_projects.db
 ```  
 
-#### Setup WordPress Plugins & Themes
-Installs plugins and themes automatically using WP-CLI based on configuration files.
-
+## For Laravel Project 
+with filament :
 ```bash
-devcore wp init New-Commerce-Project --include-setup
+devcore new project --type laravel --client "Code Sparks" --stack "laravel+vite" --init-git --with-filament --serve
 ```  
+without filament :
+```bash
+devcore new project --type laravel --client "Code Sparks" --stack "laravel+vite" --serve
+```
 
 📁 Struktur Direktori DevCore  
 ```bash

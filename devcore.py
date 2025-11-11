@@ -21,6 +21,7 @@ from core.wp_dropdb import drop_wp_database
 from core.command_config import cmd_reset_config
 from core.command_wp_setup import cmd_wp_setup, generate_project_config
 from core.env_manager import rebuild_env_config
+from core.command_new_setup import create_laravel_project
 
 import argparse
 import argparse
@@ -169,7 +170,10 @@ def build_parser():
     new_parser = subparsers.add_parser("new", help="Create new resource")
     new_sub = new_parser.add_subparsers(dest="subcommand")
 
-    proj = new_sub.add_parser("project", help="Create project scaffold")
+    # ✅ Tambahkan parser untuk 'project'
+    proj = new_sub.add_parser("project", help="Create a new project")
+    proj.add_argument("--with-filament", action="store_true", help="Install Filament admin and create sample CRUD")
+    proj.add_argument("--serve", action="store_true", help="Run Laravel development server after setup")
     proj.add_argument("--type", required=True, choices=["wordpress", "laravel", "nextjs", "api"], help="Project type")
     proj.add_argument("--client", required=True, help="Client name")
     proj.add_argument("--name", required=False, help="Project name")
@@ -245,6 +249,48 @@ def build_parser():
     config_rebuild_parser.set_defaults(func=lambda args: rebuild_env_config())
 
     return parser
+def cmd_new_project(args):
+    name = args.name or f"{args.client}-{args.type}"
+    stack = args.stack or "default"
+
+    if args.type == "laravel":
+        project_path = create_laravel_project(
+            args.client,
+            name,
+            stack,
+            args.init_git,
+            args.with_filament,
+            args.serve
+        )
+
+    else:
+        # fallback generic template
+        project_folder = os.path.join(os.getcwd(), name.replace(" ", "-"))
+        if os.path.exists(project_folder) and not args.force:
+            print(f"Error: {project_folder} exists. Use --force to overwrite.")
+            sys.exit(1)
+        if os.path.exists(project_folder) and args.force:
+            shutil.rmtree(project_folder)
+
+        create_default_templates()
+        context = {
+            "name": name,
+            "client_name": args.client,
+            "project_type": args.type,
+            "stack": stack,
+        }
+        print(f"Creating project '{name}'...")
+        create_project_structure(project_folder, context)
+
+        repo_marker = None
+        if args.init_git:
+            repo_marker = init_git_repo(project_folder)
+
+        project_path = project_folder
+
+    ensure_db()
+    add_project_to_db(name, args.client, args.type, stack, project_path, repo_url=None)
+    print(f"🗄️ Project '{name}' disimpan ke database.\n")
 
 def main():
     global args

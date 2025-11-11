@@ -7,8 +7,8 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="devcore-cli",
-    version="1.0.7",
-    author="Puji Ermanto | <Engineer>",
+    version="1.0.9",
+    author="Puji Ermanto | <Engineer> Aka : AA. Tarmana , Jonathan Davis, Milisi Bambu Runcing Terhalang",
     author_email="puji@gmail.com",
     description="DevCore — WordPress & Laravel project automation CLI",
     long_description=long_description,  # ← Tambahkan ini
